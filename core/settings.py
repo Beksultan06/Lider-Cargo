@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'ckeditor',
 
     'app.telegram',
+    'app.web_app',
 ]
 
 MIDDLEWARE = [
@@ -180,3 +181,5 @@ CKEDITOR_CONFIGS = {
         'width': 800,
     },
 }
+
+AUTH_USER_MODEL = 'web_app.User'
