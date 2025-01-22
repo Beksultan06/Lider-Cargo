@@ -1,8 +1,9 @@
 from aiogram import types, Router
 from aiogram.filters import Command
-from app.telegram.management.commands.app.button import inline
 from django.contrib.auth import get_user_model
 from asgiref.sync import sync_to_async
+from app.telegram.management.commands.app.button import get_inline_keyboard
+import logging
 
 router = Router()
 User = get_user_model()
@@ -18,22 +19,22 @@ async def start(message: types.Message):
             "У вас отсутствует username в Telegram. Пожалуйста, установите его в настройках и повторите попытку."
         )
         return
-    try:
-        user, created = await sync_to_async(User.objects.get_or_create)(
-            username=username,
-            defaults={
-                "chat_id": chat_id,
-                "full_name": full_name,
-            },
-        )
-        if not created and user.chat_id != chat_id:
-            user.chat_id = chat_id
-            await sync_to_async(user.save)()
-        if created:
-            await message.answer(f"Привет, {full_name}! Вы успешно зарегистрированы. Ваш chat_id сохранен.", reply_markup=inline)
-        else:
-            await message.answer(f"Привет, {user.full_name}! Ваш chat_id обновлен.", reply_markup=inline)
 
+    try:
+        user = await sync_to_async(lambda: User.objects.filter(username=username).first())()
+
+        if user:
+            if user.chat_id != chat_id:
+                user.chat_id = chat_id
+                await sync_to_async(user.save)()
+                await message.answer(f"Привет, {user.full_name}! Ваш chat_id обновлен.", reply_markup=get_inline_keyboard(chat_id))
+            else:
+                await message.answer(f"Привет, {user.full_name}! Ваш chat_id уже сохранен.", reply_markup=get_inline_keyboard(chat_id))
+        else:
+            await message.answer(
+                "Вы не зарегистрированы. Пожалуйста, пройдите регистрацию через веб-приложение.",
+                reply_markup=get_inline_keyboard(chat_id)
+            )
     except Exception as e:
         await message.answer("Произошла ошибка при обработке данных. Попробуйте позже.")
-        print(f"Ошибка: {e}")
+        logging.error(f"Ошибка: {e}")

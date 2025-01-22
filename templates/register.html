@@ -18,29 +18,24 @@
     {% endif %}
     <form method="post">
         {% csrf_token %}
-        <label for="full_name">ФИО:</label><br>
-        <input type="text" id="full_name" name="full_name" required><br><br>
-
-        <label for="phone_number">Номер телефона:</label><br>
-        <input type="text" id="phone_number" name="phone_number" required><br><br>
-
-        <label for="pickup_point">ПВЗ:</label><br>
-        <input type="text" id="pickup_point" name="pickup_point" required><br><br>
-
-        <label for="address">Адрес:</label><br>
-        <textarea id="address" name="address" required></textarea><br><br>
-
-        <label for="warehouse_address">Адрес склада:</label><br>
-        <textarea id="warehouse_address" name="warehouse_address" required></textarea><br><br>
-
-        <label for="password">Пароль:</label><br>
-        <input type="password" id="password" name="password" required><br><br>
-
-        <label for="password_confirmation">Подтверждение пароля:</label><br>
-        <input type="password" id="password_confirmation" name="password_confirmation" required><br><br>
-
+        <input type="hidden" name="chat_id" value="{{ chat_id }}">
+        <label>ФИО:</label>
+        <input type="text" name="full_name" required>
+        <label>Номер телефона:</label>
+        <input type="text" name="phone_number" required>
+        <label>Пункт выдачи:</label>
+        <input type="text" name="pickup_point" required>
+        <label>Адрес:</label>
+        <input type="text" name="address" required>
+        <label>Адрес склада:</label>
+        <input type="text" name="warehouse_address" required>
+        <label>Пароль:</label>
+        <input type="password" name="password" required>
+        <label>Подтверждение пароля:</label>
+        <input type="password" name="password_confirmation" required>
         <button type="submit">Зарегистрироваться</button>
     </form>
+
 </body>
 
 </html>

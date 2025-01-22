@@ -14,7 +14,15 @@ bot = Bot(token=os.environ.get("token"))
 def index(request):
     return render(request, 'index.html')
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.db import IntegrityError
+from django.contrib.auth import authenticate, login as auth_login
+from .models import User
+
 def register(request):
+    chat_id = request.GET.get("chat_id")  # Получаем chat_id из параметров запроса
+
     if request.method == "POST":
         full_name = request.POST.get("full_name")
         phone_number = request.POST.get("phone_number")
@@ -26,11 +34,11 @@ def register(request):
 
         if password != password_confirmation:
             messages.error(request, "Пароли не совпадают!")
-            return render(request, "register.html")
+            return render(request, "register.html", {"chat_id": chat_id})
 
         if User.objects.filter(phone_number=phone_number).exists():
             messages.error(request, "Пользователь с таким номером телефона уже существует!")
-            return render(request, "register.html")
+            return render(request, "register.html", {"chat_id": chat_id})
 
         try:
             user = User.objects.create_user(
@@ -41,19 +49,17 @@ def register(request):
                 pickup_point=pickup_point,
                 address=address,
                 warehouse_address=warehouse_address,
+                chat_id=chat_id,
             )
             messages.success(request, "Регистрация прошла успешно!")
-
-            if user.chat_id:
-                bot.send_message(user.chat_id, f"Вы успешно зарегистрированы! Ваше имя пользователя: {user.username}")
-
             return redirect("login")
         except IntegrityError:
             messages.error(request, "Ошибка: Пользователь с таким именем или номером телефона уже существует!")
         except Exception as e:
             messages.error(request, f"Ошибка при регистрации: {e}")
 
-    return render(request, "register.html")
+    return render(request, "register.html", {"chat_id": chat_id})
+
 
 
 def login(request):
