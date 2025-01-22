@@ -3,7 +3,13 @@ from django.contrib import messages
 from django.db import IntegrityError
 from django.contrib.auth import authenticate, login as auth_login
 from .models import User
+from aiogram import Bot
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+
+bot = Bot(token=os.environ.get("token"))
 
 def index(request):
     return render(request, 'index.html')
@@ -37,6 +43,10 @@ def register(request):
                 warehouse_address=warehouse_address,
             )
             messages.success(request, "Регистрация прошла успешно!")
+
+            if user.chat_id:
+                bot.send_message(user.chat_id, f"Вы успешно зарегистрированы! Ваше имя пользователя: {user.username}")
+
             return redirect("login")
         except IntegrityError:
             messages.error(request, "Ошибка: Пользователь с таким именем или номером телефона уже существует!")

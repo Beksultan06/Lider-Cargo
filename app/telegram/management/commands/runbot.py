@@ -1,17 +1,17 @@
-import logging
-import asyncio
+import logging, asyncio, django, os
+from dotenv import load_dotenv
 from django.core.management.base import BaseCommand
 from aiogram import Bot, Dispatcher
 from app.telegram.management.commands.app.bot import router
-import django
-import os
+
+load_dotenv()
 
 logging.basicConfig(level=logging.DEBUG)
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 django.setup()
 
-API_TOKEN = "7749815029:AAHu0CjSqNLLjq366h6CtTJYD78_tNOYlxw"
+API_TOKEN = os.environ.get("token")
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
