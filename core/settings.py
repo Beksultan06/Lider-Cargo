@@ -31,6 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+SITE_BASE_URL = "https://c939-158-181-248-104.ngrok-free.app"
 
 # Application definition
 
@@ -49,6 +50,11 @@ INSTALLED_APPS = [
     'app.web_app',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://c939-158-181-248-104.ngrok-free.app',
+]
+
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -64,7 +70,7 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / 'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
