@@ -7,19 +7,19 @@
     <title>Логин</title>
 </head>
 
-<h1>Логин</h1>
+<body>
+    <h1>Логин</h1>
 
-<form method="post">
-    {% csrf_token %}
-    <label>Номер телефона:</label>
-    <input type="text" name="phone_number" required>
+    <form method="post">
+        {% csrf_token %}
+        <label>Номер телефона:</label>
+        <input type="text" name="phone_number" required>
 
-    <label>Пароль:</label>
-    <input type="password" name="password" required>
+        <label>Пароль:</label>
+        <input type="password" name="password" required>
 
-    <button type="submit">Войти</button>
-</form>
-
+        <button type="submit">Войти</button>
+    </form>
 </body>
 
 </html>

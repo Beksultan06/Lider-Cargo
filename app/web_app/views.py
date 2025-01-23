@@ -14,13 +14,10 @@ bot = Bot(token=os.environ.get("token"))
 def index(request):
     return render(request, 'index.html')
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.db import IntegrityError
-from django.contrib.auth import authenticate, login as auth_login
-from .models import User
-
 def register(request):
+    if request.user.is_authenticated:
+        return redirect("index")  # Перенаправление на главную страницу, если пользователь уже залогинен
+
     chat_id = request.GET.get("chat_id")  # Получаем chat_id из параметров запроса
 
     if request.method == "POST":
@@ -51,15 +48,16 @@ def register(request):
                 warehouse_address=warehouse_address,
                 chat_id=chat_id,
             )
-            messages.success(request, "Регистрация прошла успешно!")
-            return redirect("login")
+            # Логиним пользователя сразу после регистрации
+            auth_login(request, user)
+            messages.success(request, "Регистрация прошла успешно! Вы вошли в систему.")
+            return redirect("index")
         except IntegrityError:
             messages.error(request, "Ошибка: Пользователь с таким именем или номером телефона уже существует!")
         except Exception as e:
             messages.error(request, f"Ошибка при регистрации: {e}")
 
     return render(request, "register.html", {"chat_id": chat_id})
-
 
 
 def login(request):
