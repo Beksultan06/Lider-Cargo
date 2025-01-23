@@ -73,3 +73,15 @@ def login(request):
             messages.error(request, "Неверный номер телефона или пароль!")
 
     return render(request, "login.html")
+
+
+from django.shortcuts import redirect, HttpResponse
+
+def redirect_to_qr_path(request, qr_path):
+    """
+    Обрабатывает ссылку из QR-кода и перенаправляет пользователя.
+    """
+    if qr_path.startswith("http://") or qr_path.startswith("https://"):
+        return redirect(qr_path)
+    else:
+        return HttpResponse(f"Путь из QR-кода: {qr_path}")

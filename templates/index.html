@@ -1,11 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Добро пожаловать в Lider Cargo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        video {
+            width: 80%;
+            max-width: 400px;
+            margin: 20px auto;
+            display: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
+
 <body>
     <p>Добро пожаловать в Lider Cargo</p>
+    <button id="openCamera">Открыть камеру</button>
+    <video id="cameraStream" autoplay></video>
+
+    <script>
+        const openCameraButton = document.getElementById('openCamera');
+        const videoElement = document.getElementById('cameraStream');
+
+        openCameraButton.addEventListener('click', async () => {
+            try {
+                // Запрос доступа к камере
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                videoElement.srcObject = stream;
+                videoElement.style.display = 'block'; // Показать элемент видео
+                openCameraButton.style.display = 'none'; // Скрыть кнопку
+            } catch (error) {
+                console.error('Ошибка доступа к камере:', error);
+                alert('Не удалось получить доступ к камере. Убедитесь, что у вас есть камера и разрешения включены.');
+            }
+        });
+    </script>
 </body>
+
 </html>
