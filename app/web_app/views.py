@@ -16,9 +16,9 @@ def index(request):
 
 def register(request):
     if request.user.is_authenticated:
-        return redirect("index")  # Перенаправление на главную страницу, если пользователь уже залогинен
+        return redirect("index")
 
-    chat_id = request.GET.get("chat_id")  # Получаем chat_id из параметров запроса
+    chat_id = request.GET.get("chat_id")
 
     if request.method == "POST":
         full_name = request.POST.get("full_name")
@@ -48,7 +48,6 @@ def register(request):
                 warehouse_address=warehouse_address,
                 chat_id=chat_id,
             )
-            # Логиним пользователя сразу после регистрации
             auth_login(request, user)
             messages.success(request, "Регистрация прошла успешно! Вы вошли в систему.")
             return redirect("index")

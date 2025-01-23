@@ -31,7 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-SITE_BASE_URL = "https://c939-158-181-248-104.ngrok-free.app"
+SITE_BASE_URL = "https://13d5-193-106-51-109.ngrok-free.app"
 
 # Application definition
 
@@ -51,7 +51,7 @@ INSTALLED_APPS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://c939-158-181-248-104.ngrok-free.app',
+    'https://13d5-193-106-51-109.ngrok-free.app',
 ]
 
 
