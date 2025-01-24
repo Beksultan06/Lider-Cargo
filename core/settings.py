@@ -54,6 +54,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://13d5-193-106-51-109.ngrok-free.app',
 ]
 
+ASGI_APPLICATION = 'core.asgi.application'
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -65,17 +66,14 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-MIDDLEWARE += [
-    'app.web_app.middleware.LoginRequiredMiddleware',
-]
+# MIDDLEWARE += [
+#     'app.web_app.middleware.LoginRequiredMiddleware',
+# ]
 
-# Использование файлов для хранения сессий (по умолчанию)
 SESSION_ENGINE = 'django.contrib.sessions.backends.file'
 
-# Срок действия куки сессии (например, 2 недели)
 SESSION_COOKIE_AGE = 1209600  # 2 недели в секундах
 
-# Сохранять сессии, даже если пользователь не взаимодействует с сайтом
 SESSION_SAVE_EVERY_REQUEST = True
 
 ROOT_URLCONF = "core.urls"

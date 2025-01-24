@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db import IntegrityError
-from django.contrib.auth import authenticate, login as auth_login
 from .models import User
 from aiogram import Bot
 from dotenv import load_dotenv
@@ -48,7 +47,7 @@ def register(request):
                 warehouse_address=warehouse_address,
                 chat_id=chat_id,
             )
-            auth_login(request, user)
+
             messages.success(request, "Регистрация прошла успешно! Вы вошли в систему.")
             return redirect("index")
         except IntegrityError:
@@ -57,22 +56,6 @@ def register(request):
             messages.error(request, f"Ошибка при регистрации: {e}")
 
     return render(request, "register.html", {"chat_id": chat_id})
-
-
-def login(request):
-    if request.method == "POST":
-        phone_number = request.POST.get("phone_number")
-        password = request.POST.get("password")
-
-        user = authenticate(username=phone_number, password=password)
-        if user is not None:
-            auth_login(request, user)
-            messages.success(request, "Вы успешно вошли в систему!")
-            return redirect("index")
-        else:
-            messages.error(request, "Неверный номер телефона или пароль!")
-
-    return render(request, "login.html")
 
 
 from django.shortcuts import redirect, HttpResponse
