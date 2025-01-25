@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.contrib import messages
 from django.db import IntegrityError
-from .models import User
+from django.contrib.auth import authenticate, login as auth_login
+from .models import User, Pvz
 from aiogram import Bot
 from dotenv import load_dotenv
 import os
@@ -22,32 +23,42 @@ def register(request):
     if request.method == "POST":
         full_name = request.POST.get("full_name")
         phone_number = request.POST.get("phone_number")
-        pickup_point = request.POST.get("pickup_point")
+        pickup_point_name = request.POST.get("pickup_point")  # Получаем имя ПВЗ как строку
         address = request.POST.get("address")
         warehouse_address = request.POST.get("warehouse_address")
         password = request.POST.get("password")
         password_confirmation = request.POST.get("password_confirmation")
 
+        # Проверка совпадения паролей
         if password != password_confirmation:
             messages.error(request, "Пароли не совпадают!")
             return render(request, "register.html", {"chat_id": chat_id})
 
+        # Проверка существующего номера телефона
         if User.objects.filter(phone_number=phone_number).exists():
             messages.error(request, "Пользователь с таким номером телефона уже существует!")
             return render(request, "register.html", {"chat_id": chat_id})
 
+        # Получение или создание объекта Pvz
         try:
+            pickup_point = Pvz.objects.get(city=pickup_point_name)  # Проверяем существующий ПВЗ
+        except Pvz.DoesNotExist:
+            pickup_point = Pvz.objects.create(city=pickup_point_name)  # Создаем новый ПВЗ, если его нет
+
+        try:
+            # Создаем пользователя
             user = User.objects.create_user(
                 username=phone_number,
                 password=password,
                 full_name=full_name,
                 phone_number=phone_number,
-                pickup_point=pickup_point,
+                pickup_point=pickup_point,  # Передаем объект Pvz
                 address=address,
                 warehouse_address=warehouse_address,
                 chat_id=chat_id,
             )
-
+            # Авторизуем пользователя
+            auth_login(request, user)
             messages.success(request, "Регистрация прошла успешно! Вы вошли в систему.")
             return redirect("index")
         except IntegrityError:
@@ -56,9 +67,6 @@ def register(request):
             messages.error(request, f"Ошибка при регистрации: {e}")
 
     return render(request, "register.html", {"chat_id": chat_id})
-
-
-from django.shortcuts import redirect, HttpResponse
 
 def redirect_to_qr_path(request, qr_path):
     """

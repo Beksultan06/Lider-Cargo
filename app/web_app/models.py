@@ -10,6 +10,17 @@ def generate_user_id():
 def generate_code():
     return ''.join(random.choices(string.digits, k=10))
 
+class Pvz(models.Model):
+    city = models.CharField(verbose_name="ПВЗ", max_length=100, null=True, blank=True)
+    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='pvz', null=True, blank=True, verbose_name="Пользователь")
+
+    def __str__(self):
+        return self.city
+
+    class Meta:
+        verbose_name = "ПВЗ"
+        verbose_name_plural = "ПВЗ"
+
 class User(AbstractUser):
     chat_id = models.BigIntegerField(null=True, blank=True, verbose_name="Chat ID")
     id_user = models.CharField(
@@ -27,7 +38,14 @@ class User(AbstractUser):
     )
     full_name = models.CharField(max_length=255, verbose_name="ФИО")
     phone_number = models.CharField(max_length=20, verbose_name="Номер телефона")
-    pickup_point = models.CharField(max_length=255, verbose_name="ПВЗ")
+    pickup_point = models.ForeignKey(
+        Pvz,
+        on_delete=models.CASCADE,
+        verbose_name="ПВЗ",
+        null=True,
+        blank=True,
+        related_name='users'
+    )
     address = models.TextField(verbose_name="Адрес")
     warehouse_address = models.TextField(verbose_name="Адрес склада")
 
@@ -37,3 +55,21 @@ class User(AbstractUser):
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
+
+
+
+class Manager(models.Model):
+    class Meta:
+        verbose_name = ''
+        verbose_name_plural = ''
+
+    username = models.CharField(max_length=155)
+    full_name = models.CharField(verbose_name="ФИО", max_length=150)
+    password = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.full_name
+
+    class Meta:
+        verbose_name = "Менеджер"
+        verbose_name_plural = "Менеджеры"

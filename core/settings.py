@@ -70,11 +70,20 @@ MIDDLEWARE = [
 #     'app.web_app.middleware.LoginRequiredMiddleware',
 # ]
 
+# Длительность сессии (в секундах)
+SESSION_COOKIE_AGE = 1209600  # 2 недели
+
+LOGIN_URL = '/index/'
+
+# Обновлять сессию при каждом запросе
+SESSION_SAVE_EVERY_REQUEST = True
+
+# Сессия сохраняется после закрытия браузера
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# Использование файлов для хранения сессий
 SESSION_ENGINE = 'django.contrib.sessions.backends.file'
 
-SESSION_COOKIE_AGE = 1209600  # 2 недели в секундах
-
-SESSION_SAVE_EVERY_REQUEST = True
 
 ROOT_URLCONF = "core.urls"
 

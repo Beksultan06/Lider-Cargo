@@ -48,11 +48,8 @@
 
         openCameraButton.addEventListener('click', async () => {
             try {
-                // Запрос доступа к камере
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 videoElement.srcObject = stream;
-
-                // Подключение к WebSocket
                 socket = new WebSocket('ws://127.0.0.1:8000/ws/scan/');
 
                 socket.onmessage = (event) => {
@@ -60,7 +57,6 @@
                     barcodeResult.textContent = `Штрих-код: ${data.barcode_data}, Тип: ${data.barcode_type}`;
                 };
 
-                // Отправка кадров на сервер
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
 
